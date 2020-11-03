@@ -61,6 +61,35 @@
 
         });
 
+        //barre de recherche
+        $("#recherche_fruit").change(function(){
+
+            let mot = $("#recherche_fruit").val();
+            
+            $("#liste_fruits").empty();//Retire tous les éléments de la liste
+            
+            if(mot.length >= 0 ){
+                
+                $.ajax({
+                    url: "index.php",
+                    data: {
+                        recherche_fruit: mot
+                    },
+                    method: "POST",
+                    dataType: "JSON"
+                })
+                .done(function(nom){
+
+                    for (let index = 0; index < nom.length; index++) {
+                        $("#liste_fruits").append("<li>" + nom[index] + "</li>");
+                        console.log(nom[index]);
+                    }
+                    
+                });
+
+            }
+        });
+
      });
  </script>
 
@@ -75,6 +104,11 @@
  <button id="envoi_reception">Envoi & Reception</button>
 
  <input type="number" placeholder="Entrez un nombre" id="nombre" name="nombre" />
+
+ <div>
+     <input type="search" id="recherche_fruit" placerholder="Entrez un nom de fruit ..." name="recherche_fruit">
+     <ul id="liste_fruits"></ul>
+ </div>
 
  </body>
 

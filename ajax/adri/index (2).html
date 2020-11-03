@@ -1,0 +1,94 @@
+<html>
+	<head>
+		<script src="jquery-3.4.1.min.js"></script>
+		<script>
+$(function(){
+	//ENVOI
+	$("#envoi").click(function(){
+		$.ajax({
+			url: "index.php",
+			data: {
+				cle: "valeur",
+				key: 123
+			},
+			method: "POST"
+		})
+		.done(function(){
+			console.log("c'est envoyé !");
+		});
+	});
+
+	//RECEPTION
+	$("#reception").click(function(){
+		$.ajax({
+			url: "index.php",
+			dataType: "json"
+		})
+		.done(function(donnees){
+			console.log(donnees);
+			console.log(donnees.c);
+		})
+		.always(function(){
+			console.log("fini");
+		});
+	});
+	
+	//Envoi & reception
+	$("#envoi_reception").click(function(){
+		/* A COMPLETER */
+		$.ajax({
+			url: "index.php",
+			data: {
+				nombre: $("#nombre").val()
+			},
+			method: "POST"
+		}).done(function(reponse){
+			//on traite ce qu'a renvoyé la page index.php
+			console.log(reponse);
+		});
+	});
+	
+	//Barre de recherche
+	//$("#recherche_fruit").change(function(){
+	$("#recherche_fruit").on("input", function(){
+		let mot = $("#recherche_fruit").val();
+		
+		//Retire tous les éléments de la liste
+		$("#liste_fruits").empty();
+		
+		if (mot.length>=3) {
+			//On lance la recherche en AJAX
+			$.ajax({
+				url: "index.php",
+				data: {
+					recherche: mot
+				},
+				method: "POST",
+				dataType: "JSON"
+			}).done(function(reponse){
+				//On parcours la réponse en JSON
+				//console.log(reponse);
+				
+				for (i=0; i<reponse.length; i++) {
+					//Pour chacun des éléments envoyés en JSON, on l'ajoute à la liste des fruits
+					$("#liste_fruits").append("<li>"+reponse[i].id+" "+reponse[i].nom+"</li>");
+				}
+				
+				
+				
+			});
+		}
+	});
+});
+		</script>
+	</head>
+	<body>
+		<button id="envoi">Envoi</button>
+		<button id="reception">Reception</button>
+		<button id="envoi_reception">Envoi & Reception</button>
+		<input type="number" placeholder="Entrez un nombre" id="nombre" />
+		
+		<input type="search" id="recherche_fruit" placeholder="Entrez un nom de fruit..." />
+		<ul id="liste_fruits"></ul>
+	</body>
+</html>

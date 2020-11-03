@@ -26,3 +26,12 @@ exemple :
             });
 
         });
+
+#### .change()
+
+c'est un évènnement sur le contenu
+
+
+#### .append()
+
+ajouter du html
