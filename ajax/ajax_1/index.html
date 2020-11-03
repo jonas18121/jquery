@@ -1,0 +1,81 @@
+<html>
+
+ <head>
+
+ <script src="jquery-3.5.1.min.js"></script>
+
+ <script>
+     
+     $(function(){
+
+        //envoie
+        $("#envoi").click(function(){
+
+            $.ajax(
+                {
+                    url: "index.php",
+                    data: {
+                        cle: "valeur",
+                        key: 123
+                    },
+                    method: "POST"
+                }
+            ).done(function(){
+                console.log("c'est envoyer !");
+            });
+
+        });
+
+        // Reception
+        $("#reception").click(function(){
+
+            $.ajax(
+                {
+                    url: "index.php",
+                    dataType: "json"
+                }
+            )
+            .done(function(donnees){
+                console.log(donnees);
+                console.log(donnees.c);
+            })
+            .always(function(){
+                console.log("fini");
+            }) ;
+
+        });
+
+        // Envoi & reception
+        $("#envoi_reception").click(function(){
+
+            $.ajax({
+                url: "index.php",
+                data: {
+                    nombre: $("#nombre").val()
+                },
+                method: "POST"
+            })
+            .done(function(nombre){
+                console.log(nombre);
+            });
+
+        });
+
+     });
+ </script>
+
+ </head>
+
+ <body>
+
+ <button id="envoi">Envoi</button>
+
+ <button id="reception">Reception</button>
+
+ <button id="envoi_reception">Envoi & Reception</button>
+
+ <input type="number" placeholder="Entrez un nombre" id="nombre" name="nombre" />
+
+ </body>
+
+ </html>
