@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<script src="jquery-3.4.1.min.js"></script>
+		<script>
+$(function(){
+	//RECHERCHE DE VILLE
+	$("#ville").on("input", function(){
+		let mot = $("#ville").val();
+		
+		//Retire tous les éléments de la liste
+		$("#liste_villes").empty();
+		
+		if (mot.length>=3) {
+			//On lance la recherche en AJAX
+			$.ajax({
+				url: "index.php",
+				data: {
+					recherche_ville: mot
+				},
+				method: "POST",
+				dataType: "JSON"
+			}).done(function(reponse){
+				//On parcours la réponse en JSON
+				//console.log(reponse);
+				
+				for (i=0; i<reponse.length; i++) {
+					//Pour chacun des éléments envoyés en JSON, on l'ajoute à la liste des fruits
+					$("#liste_villes").append('<li data-nom="'+reponse[i].nom+'" data-cp="'+reponse[i].cp+'">'+reponse[i].nom+" ("+reponse[i].cp+")"+"</li>");
+				}
+				
+				//Ajout des elements terminé
+				$("#liste_villes li").click(function(){
+					$("#ville").val( $(this).data("nom") );
+					$("#cp").val( $(this).data("cp") );
+				});
+			});
+		}
+	});
+	
+	$("#cp").on("input", function(){
+		let mot = $("#cp").val();
+		
+		//Retire tous les éléments de la liste
+		$("#liste_villes").empty();
+		
+		if (mot.length>=2) {
+			//On lance la recherche en AJAX
+			$.ajax({
+				url: "index.php",
+				data: {
+					recherche_cp: mot
+				},
+				method: "POST",
+				dataType: "JSON"
+			}).done(function(reponse){
+				//On parcours la réponse en JSON
+				//console.log(reponse);
+				
+				for (i=0; i<reponse.length; i++) {
+					//Pour chacun des éléments envoyés en JSON, on l'ajoute à la liste des fruits
+					$("#liste_villes").append('<li data-nom="'+reponse[i].nom+'" data-cp="'+reponse[i].cp+'">'+reponse[i].nom+" ("+reponse[i].cp+")"+"</li>");
+				}
+				
+				//Ajout des elements terminé
+				$("#liste_villes li").click(function(){
+					$("#ville").val( $(this).data("nom") );
+					$("#cp").val( $(this).data("cp") );
+				});
+			});
+		}
+	});
+	
+});
+		</script>
+	</head>
+	<body>
+		<input type="text" id="ville" placeholder="Ville" />
+		<input type="text" id="cp" placeholder="Code postal" />
+		<ul id="liste_villes"></ul>
+	</body>
+</html>
