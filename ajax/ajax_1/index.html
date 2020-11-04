@@ -62,7 +62,8 @@
         });
 
         //barre de recherche
-        $("#recherche_fruit").change(function(){
+        $("#recherche_fruit").on("input", function(){
+        //$("#recherche_fruit").change(function(){
 
             let mot = $("#recherche_fruit").val();
             
@@ -81,34 +82,98 @@
                 .done(function(nom){
 
                     for (let index = 0; index < nom.length; index++) {
-                        $("#liste_fruits").append("<li>" + nom[index] + "</li>");
+                        $("#liste_fruits").append('<li data-nom="' + nom[index] + '">' + nom[index] + '</li>');
                         console.log(nom[index]);
                     }
+
+                    // Ajout des elements terminé
+                    $("#liste_fruits li").click(function(){
+                        $("#recherche_fruit").val($(this).data("nom"));
+                    });
                     
                 });
 
             }
         });
 
-     });
+
+        // recherche ville
+        $("#recherche_ville, #recherche_code_postal").on("input", function(){
+
+            let nom_ville   = $("#recherche_ville").val();
+            let code_postal = $("#recherche_code_postal").val();
+
+            if ( nom_ville !== '' && nom_ville !== 0) {
+
+                nom_ville = nom_ville;
+                code_postal ='';
+            } 
+            else if(code_postal !== '' && code_postal !== 0){
+                
+                code_postal = code_postal;
+                nom_ville ='';
+            }
+
+            $("#liste_villes").empty();
+
+            if(nom_ville.length >= 1 || code_postal.length >= 1 ){
+
+                $.ajax({
+                    url: "index.php",
+                    data: {
+                        recherche_ville: nom_ville,
+                        recherche_code_postal: code_postal
+                    },
+                    method: "POST",
+                    dataType: "JSON"
+                })
+                .done(function(reponse){
+                    for (let index = 0; index < reponse.length; index++) {
+                        
+                        $("#liste_villes").append('<li data-nom="' + reponse[index].nom + '" data-postal="' + reponse[index].postal + '">' + reponse[index].nom + ' (' + reponse[index].postal + ')' + '</li>');
+                    }
+
+                    // Ajout des elements terminé
+                    $("#liste_villes li").click(function(){
+                        $("#recherche_ville").val($(this).data("nom"));
+                        $("#recherche_code_postal").val($(this).data("postal"));
+                    });
+                });
+
+            }
+
+        });
+
+    });
  </script>
 
  </head>
 
  <body>
 
- <button id="envoi">Envoi</button>
+    <button id="envoi">Envoi</button>
 
- <button id="reception">Reception</button>
+    <button id="reception">Reception</button>
 
- <button id="envoi_reception">Envoi & Reception</button>
+    <button id="envoi_reception">Envoi & Reception</button>
 
- <input type="number" placeholder="Entrez un nombre" id="nombre" name="nombre" />
+    <input type="number" placeholder="Entrez un nombre" id="nombre" name="nombre" />
 
- <div>
-     <input type="search" id="recherche_fruit" placerholder="Entrez un nom de fruit ..." name="recherche_fruit">
-     <ul id="liste_fruits"></ul>
- </div>
+    <div>
+        <input type="search" id="recherche_fruit" placeholder="Entrez un nom de fruit ..." name="recherche_fruit">
+        <ul id="liste_fruits"></ul>
+    </div>
+
+
+    <h4>recherche villes</h4>
+    <div>
+        <input type="search" id="recherche_ville" placeholder="entrer une ville" name="recherche_ville">
+        ou
+        <input type="search" id="recherche_code_postal" placeholder="entrer un code postal" name="recherche_code_postal">
+
+        <ul id="liste_villes"></ul>
+        <!-- affiché nom de ville + code postal ex: Langueux (22360) -->
+    </div>
 
  </body>
 
