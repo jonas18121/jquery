@@ -128,8 +128,9 @@
                     dataType: "JSON"
                 })
                 .done(function(reponse){
-                    for (let index = 0; index < reponse.length; index++) {
-                        
+                    
+                    for (let index = 0; index < reponse.length; index++) 
+                    {    
                         $("#liste_villes").append('<li data-nom="' + reponse[index].nom + '" data-postal="' + reponse[index].postal + '">' + reponse[index].nom + ' (' + reponse[index].postal + ')' + '</li>');
                     }
 
