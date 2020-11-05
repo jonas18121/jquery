@@ -7,6 +7,7 @@ class Database{
     public $sql_pwd;
     public $sql_db;
     public $bdd;
+    private static $instance = null;
 
     public function __construct()
     {
@@ -18,7 +19,10 @@ class Database{
 
     public function connect_bdd()
     {
-        return $this->bdd = new mysqli($this->sql_host, $this->sql_login, $this->sql_pwd, $this->sql_db);
+        if (self::$instance === null) {
+            self::$instance = $this->bdd = new mysqli($this->sql_host, $this->sql_login, $this->sql_pwd, $this->sql_db);
+        }
+        return self::$instance;
     }
 }
 

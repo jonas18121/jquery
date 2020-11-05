@@ -25,7 +25,7 @@ if ($_POST) {
     
     
     # recherche fruit
-    if (isset($_POST['recherche_fruit'])){
+    if (isset($_POST['recherche_fruit']) && !empty($_POST['recherche_fruit'])){
 
         $nom = $_POST['recherche_fruit'];
         $fruits = [];
