@@ -1,0 +1,42 @@
+<?php
+
+require_once 'config/Database.php';
+require_once 'tools/tools.php';
+require_once 'Model/MessageModel.php';
+require_once 'Entity/Message.php';
+
+$message_model = new MessageModel();
+$messages = $message_model->get_all_message();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery-3.5.1.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1>FOAD AJAX</h1>
+    
+    <?php //for ($i=0; $i < count($messages); $i++) : ?>
+    <?php foreach($messages as $message ) : ?>
+        <div>
+            <p><?php // pre_var_dump($message) ?></p>
+            <h3><?= $message->get_title(); ?></h3>
+            <p>publié par <strong><?= $message->get_pseudo() ?></strong> le <?= $message->get_date_at()->format('d/m/Y') ?></p>
+            <p><?= $message->get_content() ?></p>
+
+            <input type="hidden" id="id" value="<?= $message->get_id() ?>" >
+
+            <p id="voir_reponse">voir réponse \/</p>
+            <p id="cache_reponse"> masquer réponse /\ </p>
+            <div id="affiche_reponse" ></div>
+        </div>
+    <?php endforeach ?>
+    <?php //endfor ?>
+
+    
+</body>
+</html>

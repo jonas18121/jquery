@@ -5,6 +5,10 @@ require_once 'Fruit.php';
 $bdd = new Database();
 $bdd = $bdd->connect_bdd();
 
+//Cas défaut
+//$arr = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5);
+//echo json_encode($arr);
+
 function pairImpair($nombre)
 {
     return ($nombre&1) ? "{$nombre} est impair " : "{$nombre} est pair ";
