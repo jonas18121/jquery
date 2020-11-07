@@ -29,7 +29,23 @@ class MessageModel
         return $all_messages;
     }
 
+    /**
+     * selectionner un message
+     */
+    public function get_one_message($id, $res_id = null, $res_title = null, $res_content = null, $res_date_at = null, $res_adresse_ip = null, $res_pseudo = null)
+    {
+        $sql = "SELECT id, title, content, date_at, adresse_ip, pseudo FROM message WHERE id = ?";
+        $message = $this->bdd->prepare($sql);
+        $message->bind_param("i", $id);
+        $message->execute();
+        $message->bind_result($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo);
+        $message->fetch();
+        $one_message = Message::construct_params($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo);  
 
+        $message->close();
+
+        return $one_message;
+    }
 }
 
 
