@@ -57,5 +57,37 @@ $(function () {
 
     /////////// Fin de afficher et masquer les réponses d'un message précis ////////
             
-    
+    ////////// Créer un message et afficher les derniers message poster ///////////////
+
+    $("#enregistrer_message").click(function(){
+
+        $("#affiche_new_message").empty();
+        
+        $.ajax({
+            url: "index_ajax.php",
+            data: {
+                post_pseudo: $("#pseudo").val(),
+                post_title: $("#title").val(),
+                post_content: $("#content").val()
+            },
+            method: "POST",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            $("#affiche_new_message").append(
+
+                '<div>'
+                    + '<h2>Dernier message poster :</h2>'
+                    + '<h3>' + reponse.title + '</h3>'
+                    + '<p>publié par <strong>' + reponse.pseudo + '</strong> le ' + reponse.date_at.date + '</p>'
+                    + '<a href="template/message/get_one_message.phtml?id_message= ' + reponse.id + '">'
+                        + '<p>' + reponse.content + '</p>'
+                    + '</a>' 
+                + '</div>'
+            );
+        });
+    });    
+
+    ////////// Fin créer un message et afficher les derniers message poster  ///////////////
 });
