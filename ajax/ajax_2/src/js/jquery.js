@@ -1,20 +1,21 @@
 'use strict'
 
 $(function () {
-
-    console.log($("#id").val());
-    $("#cache_reponse").hide();
     
+    /////////// Afficher et masquer les réponses d'un message précis ////////
+
+    $("#cache_reponse").hide();
+
     $("#voir_reponse").click(function(){
 
         $("#affiche_reponse").empty();
 
         $("#voir_reponse").hide();
-        $("#cache_reponse").show();
+        $("#cache_reponse").show(); 
         
 
         $.ajax({
-            url: "index_ajax.php",
+            url: "../../index_ajax.php",
             data: {
                 id_message: $("#id").val() 
             },
@@ -22,9 +23,10 @@ $(function () {
             dataType: "json"
         })
         .done(function(reponse){ 
-
-            //console.log(reponse);
             
+            if (reponse.length == '') {
+                $("#affiche_reponse").append('<p>Il n\'ya pas encore de reponse, soyer le premier à écrire une réponse </p>');
+            }
 
             for (let index = 0; index < reponse.length; index++) {
 
@@ -36,6 +38,7 @@ $(function () {
                     + '</div>'
                 );
             }
+            
         });
 
         $("#cache_reponse").click(function(){
@@ -49,6 +52,10 @@ $(function () {
             $("#cache_reponse").show();
             $("#affiche_reponse").show();
         });
+
     });
+
+    /////////// Fin de afficher et masquer les réponses d'un message précis ////////
+            
     
 });
