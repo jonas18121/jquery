@@ -32,9 +32,9 @@ $(function () {
 
                 console.log(reponse[index]);
                 $("#affiche_reponse").append(
-                    '<div>'  +
-                        '<p> publier par ' + reponse[index].pseudo + ' le ' + reponse[index].date_at.date + '</p>' +
-                        '<p>' + reponse[index].content + '</p>'
+                    '<div>'  
+                        + '<p> publier par ' + reponse[index].pseudo + ' le ' + reponse[index].date_at.date + '</p>' 
+                        + '<p>' + reponse[index].content + '</p>'
                     + '</div>'
                 );
             }
@@ -90,4 +90,42 @@ $(function () {
     });    
 
     ////////// Fin créer un message et afficher les derniers message poster  ///////////////
+
+    ////////// Compteur Like et no like de message //////////
+
+    $("#like").click(function(){
+
+        $.ajax({
+            url: "../../index_ajax.php",
+            data: {
+                id_message: $("#id").val(),
+                yes_like: $("#like").val()
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            console.log(reponse);
+        });
+    });
+
+    $("#no_like").click(function(){
+
+        $.ajax({
+            url: "../../index_ajax.php",
+            data: {
+                id_message: $("#id").val(),
+                like_no: $("#no_like").val()
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            console.log(reponse);
+        });
+    });
+
+    ////////// Fin compteur Like et no like de message ////////// 
 });

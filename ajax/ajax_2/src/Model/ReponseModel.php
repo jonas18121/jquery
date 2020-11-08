@@ -29,4 +29,15 @@ class ReponseModel
         //pre_var_dump('ligne 29, ReponseModel.php ',$all_reponses, true);
         return $all_reponses;
     }
+
+    /**
+     * Ajouter une reponse
+     */
+    public function add_reponse($id, $pseudo, $content, $adresse_ip, $id_message )
+    {
+        $sql = "INSERT INTO reponse (id, pseudo, content, adresse_ip, id_message) VALUES (?, ?, ?, ?, ?)";
+        $add_message = $this->bdd->prepare($sql);
+        $add_message->bind_param('isssi', $id, $pseudo, $content, $adresse_ip, $id_message);
+        $add_message->execute();
+    }
 }
