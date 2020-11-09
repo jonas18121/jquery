@@ -28,7 +28,52 @@ $one_message = $message_model->get_one_message($id_message);
         <p>publié par <strong><?= $one_message->get_pseudo() ?></strong> le <?= $one_message->get_date_at()->format('d/m/Y') ?></p>
         <p><?= $one_message->get_content() ?></p> 
 
-        <input type="hidden" id="id" value="<?= $one_message->get_id() ?>" >
+        <button id="like" value="1">Like (<span id="affiche_like" ><?= $one_message->get_yes_like() ?></span>) </button>
+
+        <button id="no_like" value="1">No like (<span id="affiche_no_like" ><?= $one_message->get_no_like() ?></span>)</button>
+
+        <!-- <input type="hidden" id="id" value="<?//= $one_message->get_id() ?>" > -->
+
+        <h3>Creer une réponse</h3>
+
+        <?php if(isset($_GET['error'])) : ?>
+
+            <?php if($_GET['error'] === 'pseudo') : ?>
+                <p style="color:red;">Le champ du pseudo est vide, veuillez le remplir, svp</p>
+            <?php endif ?>
+
+            <?php if($_GET['error'] === 'content') : ?>
+                <p style="color:red;">Le champ du contenu est vide, veuillez le remplir, svp</p>
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php if(isset($_GET['success'])) : ?>
+
+            <?php if($_GET['success'] === 'create_reponse') : ?>
+                <p style="color:green;">super ! votre reponse a été créer avec success</p>
+            <?php endif ?>
+
+        <?php endif ?>
+
+        <form action="../../index_ajax.php" method="post">
+
+            <div>
+                <input type="text" name="pseudo" placeholder="Entrez votre pseudo">
+            </div>
+
+            <div>
+                <textarea name="content" id="" cols="30" rows="10" placeholder="Entrez un texte"></textarea>
+            </div>
+
+            <div>
+                <input type="hidden" id="id" name="id_message" value="<?= $one_message->get_id() ?>" >
+            </div>
+
+            <div>
+                <input type="submit" name="add_reponse" value="ajouter cette reponse" >
+            </div>
+
+        </form>
 
         <p id="voir_reponse">voir réponse \/</p>
         <p id="cache_reponse"> masquer réponse /\ </p>

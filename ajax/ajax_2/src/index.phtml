@@ -41,14 +41,15 @@ $messages = $message_model->get_all_message();
     <h2>liste de message</h2>
 
     <?php foreach($messages as $message ) : ?>
-        <div>
 
+        <div>
             <h3><?= $message->get_title(); ?></h3>
             <p>publié par <strong><?= $message->get_pseudo() ?></strong> le <?= $message->get_date_at()->format('d/m/Y') ?></p>
             <a href="template/message/get_one_message.phtml?id_message=<?= $message->get_id() ?>">
                 <p><?= $message->get_content() ?></p>
             </a> 
         </div>
+        
     <?php endforeach ?>
 
 </body>
