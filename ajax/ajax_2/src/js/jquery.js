@@ -30,10 +30,10 @@ $(function () {
 
             for (let index = 0; index < reponse.length; index++) {
 
-                console.log(reponse[index]);
+                //console.log(reponse[index]);
                 $("#affiche_reponse").append(
                     '<div>'  
-                        + '<p> publier par ' + reponse[index].pseudo + ' le ' + reponse[index].date_at.date + '</p>' 
+                        + '<p> publier par <strong> ' + reponse[index].pseudo + ' </strong> le ' + reponse[index].date_at.date + '</p>' 
                         + '<p>' + reponse[index].content + '</p>'
                     + '</div>'
                 );
@@ -95,10 +95,13 @@ $(function () {
 
     $("#like").click(function(){
 
+        $("#affiche_like").empty();
+        
+
         $.ajax({
             url: "../../index_ajax.php",
             data: {
-                id_message: $("#id").val(),
+                id_message_id: $("#id").val(),
                 yes_like: $("#like").val()
             },
             method: "post",
@@ -106,16 +109,18 @@ $(function () {
         })
         .done(function(reponse){
 
-            console.log(reponse);
+            $("#affiche_like").append(reponse.yes_like);
         });
     });
 
     $("#no_like").click(function(){
 
+        $("#affiche_no_like").empty();
+
         $.ajax({
             url: "../../index_ajax.php",
             data: {
-                id_message: $("#id").val(),
+                id_message_id: $("#id").val(),
                 like_no: $("#no_like").val()
             },
             method: "post",
@@ -123,7 +128,7 @@ $(function () {
         })
         .done(function(reponse){
 
-            console.log(reponse);
+            $("#affiche_no_like").append(reponse.no_like);
         });
     });
 

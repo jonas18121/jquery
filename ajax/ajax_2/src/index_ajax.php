@@ -38,10 +38,10 @@ if ($_POST) {
 
                 //pre_var_dump('ok');
                 $id         = null;
-                $title      = $_POST['post_title'];
-                $content    = $_POST['post_content'];
-                $adresse_ip = $_SERVER['REMOTE_ADDR'];
-                $pseudo     = $_POST['post_pseudo'];
+                $title      = trim(strip_tags($_POST['post_title']));
+                $content    = trim(strip_tags($_POST['post_content']));
+                $adresse_ip = trim(strip_tags($_SERVER['REMOTE_ADDR']));
+                $pseudo     = trim(strip_tags($_POST['post_pseudo']));
 
                 $message_model->add_message($id, $title, $content, $adresse_ip, $pseudo);
 
@@ -52,32 +52,46 @@ if ($_POST) {
     }
 
     # ajout like ou no like
-    if(isset($_POST['id_message']) && !empty($_POST['id_message'])){
-        $id_message = (int) $_POST['id_message'];
+    if(isset($_POST['id_message_id']) && !empty($_POST['id_message_id'])){
+        $id_message = (int) $_POST['id_message_id'];
 
         if(isset($_POST['yes_like']) && !empty($_POST['yes_like'])){
 
             $yes_like = $_POST['yes_like'];
             $message_model->like($id_message, $yes_like);
+            $one_message = $message_model->get_one_message($id_message);
+            echo json_encode($one_message);
         }
         
         if(isset($_POST['like_no']) && !empty($_POST['like_no'])){
 
             $no_like = $_POST['like_no'];
             $message_model->no_like($id_message, $no_like);
+            $one_message = $message_model->get_one_message($id_message);
+            echo json_encode($one_message);
         }
     }
 
     if(isset($_POST['add_reponse'])){
-
-        $id = null;
-        $pseudo = $_POST['pseudo'];
-        $content = $_POST['content'];
-        $adresse_ip = $_SERVER['REMOTE_ADDR'];
         $id_message = (int) $_POST['id_message'];
 
+        if(isset($_POST['pseudo']) && empty($_POST['pseudo'])){
+            header_location('template/message/get_one_message.phtml?id_message=' . $id_message . '&error=pseudo');
+        }
+        if(isset($_POST['content']) && empty($_POST['content'])){
+            header_location('template/message/get_one_message.phtml?id_message=' . $id_message . '&error=content');
+        }
+
+        $id         = null;
+        $pseudo     = trim(strip_tags($_POST['pseudo']));
+        $content    = trim(strip_tags($_POST['content']));
+        $adresse_ip = trim(strip_tags($_SERVER['REMOTE_ADDR']));
+        // $id_message = (int) $_POST['id_message'];
+
         $reponse_model->add_reponse($id, $pseudo, $content, $adresse_ip, $id_message);
-        header_location('template/message/get_one_message.phtml?id_message=' . $id_message);
+        header_location('template/message/get_one_message.phtml?id_message=' . $id_message . '&success=create_reponse');
+           
+        
     }
 
 }
