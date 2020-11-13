@@ -28,12 +28,18 @@ $one_message = $message_model->get_one_message($id_message);
         <p>publié par <strong><?= $one_message->get_pseudo() ?></strong> le <?= $one_message->get_date_at()->format('d/m/Y') ?></p>
         <p><?= $one_message->get_content() ?></p> 
 
-        <button id="like" value="1">Like (<span id="affiche_like" ><?= $one_message->get_yes_like() ?></span>) </button>
+        <!-- <button class="like_dislike" id="like" value="1">Like (<span id="affiche_like" ><?//= $one_message->get_yes_like() ?></span>) </button>
 
-        <button id="no_like" value="1">No like (<span id="affiche_no_like" ><?= $one_message->get_no_like() ?></span>)</button>
+        <button class="like_dislike" id="no_like" value="1">No like (<span id="affiche_no_like" ><?//= $one_message->get_no_like() ?></span>)</button> -->
 
+        <button class="like_dislike" data-value="1" data-id_message="<?= $one_message->get_id() ?>">Like (<span id="affiche_like" ><?= $one_message->get_yes_like() ?></span>) </button>
+
+        <button class="like_dislike" data-value="-1" data-id_message="<?= $one_message->get_id() ?>">No like (<span id="affiche_no_like" ><?= $one_message->get_no_like() ?></span>)</button>
         <!-- <input type="hidden" id="id" value="<?//= $one_message->get_id() ?>" > -->
-
+        <!--
+            id="like-<?//= $one_message->get_id() ?>"
+            id="no_like-<?//= $one_message->get_id() ?>"
+        -->
         <h3>Creer une réponse</h3>
 
         <?php if(isset($_GET['error'])) : ?>

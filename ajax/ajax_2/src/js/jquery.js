@@ -110,6 +110,7 @@ $(function () {
         .done(function(reponse){
 
             $("#affiche_like").append(reponse.yes_like);
+
         });
     });
 
@@ -131,6 +132,35 @@ $(function () {
             $("#affiche_no_like").append(reponse.no_like);
         });
     });
+
+    //////////////////// new correct adri
+
+    $('.like_dislike').click(function(){
+
+        let id_message = $(this).data('id_message');
+        let value   = $(this).data('value');
+
+        $("#affiche_like").empty();
+        $("#affiche_no_like").empty();
+        
+        $.ajax({
+            url : "../../index_ajax.php",
+            data: {
+                id_message_id: id_message,
+                value_like: value
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            console.log(reponse);
+            $("#affiche_like").append(reponse.yes_like);
+            $("#affiche_no_like").append(reponse.no_like);
+        });
+
+    });
+    
 
     ////////// Fin compteur Like et no like de message ////////// 
 });
