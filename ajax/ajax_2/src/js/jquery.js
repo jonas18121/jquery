@@ -30,11 +30,11 @@ $(function () {
 
             for (let index = 0; index < reponse.length; index++) {
 
-                console.log(reponse[index]);
+                //console.log(reponse[index]);
                 $("#affiche_reponse").append(
-                    '<div>'  +
-                        '<p> publier par ' + reponse[index].pseudo + ' le ' + reponse[index].date_at.date + '</p>' +
-                        '<p>' + reponse[index].content + '</p>'
+                    '<div>'  
+                        + '<p> publier par <strong> ' + reponse[index].pseudo + ' </strong> le ' + reponse[index].date_at.date + '</p>' 
+                        + '<p>' + reponse[index].content + '</p>'
                     + '</div>'
                 );
             }
@@ -90,4 +90,77 @@ $(function () {
     });    
 
     ////////// Fin créer un message et afficher les derniers message poster  ///////////////
+
+    ////////// Compteur Like et no like de message //////////
+
+    $("#like").click(function(){
+
+        $("#affiche_like").empty();
+        
+
+        $.ajax({
+            url: "../../index_ajax.php",
+            data: {
+                id_message_id: $("#id").val(),
+                yes_like: $("#like").val()
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            $("#affiche_like").append(reponse.yes_like);
+
+        });
+    });
+
+    $("#no_like").click(function(){
+
+        $("#affiche_no_like").empty();
+
+        $.ajax({
+            url: "../../index_ajax.php",
+            data: {
+                id_message_id: $("#id").val(),
+                like_no: $("#no_like").val()
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            $("#affiche_no_like").append(reponse.no_like);
+        });
+    });
+
+    //////////////////// new correct adri
+
+    $('.like_dislike').click(function(){
+
+        let id_message = $(this).data('id_message');
+        let value   = $(this).data('value');
+
+        $("#affiche_like").empty();
+        $("#affiche_no_like").empty();
+        
+        $.ajax({
+            url : "../../index_ajax.php",
+            data: {
+                id_message_id: id_message,
+                value_like: value
+            },
+            method: "post",
+            dataType: "json"
+        })
+        .done(function(reponse){
+
+            console.log(reponse);
+            $("#affiche_like").append(reponse.yes_like);
+            $("#affiche_no_like").append(reponse.no_like);
+        });
+
+    });
+    
+
+    ////////// Fin compteur Like et no like de message ////////// 
 });
