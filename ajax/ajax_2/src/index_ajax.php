@@ -46,7 +46,7 @@ if ($_POST) {
                 //pre_var_dump('ok');
                 $id         = null;
                 $title      = trim(strip_tags($_POST['post_title']));
-                $content    = trim(strip_tags($_POST['post_content']));
+                $content    = trim(htmlspecialchars(addslashes($_POST['post_content'])));
                 $adresse_ip = trim(strip_tags($_SERVER['REMOTE_ADDR']));
                 //$adresse_ip = null;
                 $pseudo     = trim(strip_tags($_POST['post_pseudo']));
