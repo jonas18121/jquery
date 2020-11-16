@@ -1,24 +1,25 @@
 <?php
 
-class User
+class User 
 {
     public $id;
-    public $adresse_ip;
-    public $id_message;
+    public $pseudo;
+    public $email;
+    public $password;
 
     public function __construct(){}
 
-    public static function construct_params($id, $adresse_ip, $id_message)
+    public static function construct_params($id, $pseudo, $email, $password)
     {
         $user = new User();
 
-        $user->id = $id;
-        $user->adresse_ip = $adresse_ip;
-        $user->id_message = $id_message;
+        $user->id       = $id;
+        $user->pseudo   = $pseudo;
+        $user->email    = $email;
+        $user->password = $password;
 
         return $user;
     }
-    
 
     /**
      * Get the value of id
@@ -41,41 +42,61 @@ class User
     }
 
     /**
-     * Get the value of adresse_ip
+     * Get the value of pseudo
      */ 
-    public function get_adresse_ip()
+    public function get_pseudo()
     {
-        return $this->adresse_ip;
+        return $this->pseudo;
     }
 
     /**
-     * Set the value of adresse_ip
+     * Set the value of pseudo
      *
      * @return  self
      */ 
-    public function set_adresse_ip($adresse_ip)
+    public function set_pseudo($pseudo)
     {
-        $this->adresse_ip = $adresse_ip;
+        $this->pseudo = $pseudo;
 
         return $this;
     }
 
     /**
-     * Get the value of id_message
+     * Get the value of email
      */ 
-    public function get_id_message()
+    public function get_email()
     {
-        return $this->id_message;
+        return $this->email;
     }
 
     /**
-     * Set the value of id_message
+     * Set the value of email
      *
      * @return  self
      */ 
-    public function set_id_message($id_message)
+    public function set_email($email)
     {
-        $this->id_message = $id_message;
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of password
+     */ 
+    public function get_password()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set the value of password
+     *
+     * @return  self
+     */ 
+    public function set_password($password)
+    {
+        $this->password = $password;
 
         return $this;
     }
