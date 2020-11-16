@@ -1,5 +1,9 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();//demarre
+}
+
 require_once 'config/Database.php';
 require_once 'tools/tools.php';
 require_once 'Model/MessageModel.php';
@@ -7,6 +11,7 @@ require_once 'Entity/Message.php';
 
 $message_model = new MessageModel();
 $messages = $message_model->get_all_message();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +28,14 @@ $messages = $message_model->get_all_message();
     <title>Document</title>
 </head>
 <body>
+
+    <?php if(is_authenticated_user()) : ?>
+        <a href="template/user/deconnexion_user.phtml"> Déconnexion </a>
+    <?php else : ?>
+        <a href="template/user/connexion_user.phtml"> Connexion </a>
+        <a href="template/user/inscription_user.phtml"> Inscription </a>
+    <?php endif ?>
+
     <h1>FOAD AJAX</h1>
 
     <h2>Créer un message</h2>
