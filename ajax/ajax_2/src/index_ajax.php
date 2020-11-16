@@ -5,15 +5,15 @@ require_once 'tools/tools.php';
 
 require_once 'Model/MessageModel.php';
 require_once 'Model/ReponseModel.php';
-require_once 'Model/UserModel.php';
+require_once 'Model/LikeDislikeModel.php';
 
 require_once 'Entity/Message.php';
 require_once 'Entity/Reponse.php';
-require_once 'Entity/User.php';
+require_once 'Entity/LikeDislike.php';
 
-$message_model = new MessageModel();
-$reponse_model = new ReponseModel();
-$user_model    = new UserModel();
+$message_model      = new MessageModel();
+$reponse_model      = new ReponseModel();
+$like_dislike_model = new LikeDislikeModel();
 
 // $message_entity = new Message(); 
 
@@ -24,7 +24,6 @@ if ($_GET) {
         $one_message = $message_model->get_one_message($id_message);
         echo json_encode($one_message);
     }
-
 }
 
 
@@ -46,7 +45,7 @@ if ($_POST) {
                 //pre_var_dump('ok');
                 $id         = null;
                 $title      = trim(strip_tags($_POST['post_title']));
-                $content    = trim(htmlspecialchars(addslashes($_POST['post_content'])));
+                $content    = trim(addslashes($_POST['post_content']));
                 $adresse_ip = trim(strip_tags($_SERVER['REMOTE_ADDR']));
                 //$adresse_ip = null;
                 $pseudo     = trim(strip_tags($_POST['post_pseudo']));
@@ -77,9 +76,7 @@ if ($_POST) {
         // $id_message = (int) $_POST['id_message'];
 
         $reponse_model->add_reponse($id, $pseudo, $content, $adresse_ip, $id_message);
-        header_location('template/message/get_one_message.phtml?id_message=' . $id_message . '&success=create_reponse');
-           
-        
+        header_location('template/message/get_one_message.phtml?id_message=' . $id_message . '&success=create_reponse'); 
     }
 
 
@@ -96,6 +93,8 @@ if ($_POST) {
             [$search_like_bool, $search_like] = $message_model->search_like($_SERVER['REMOTE_ADDR'], $id_message);
             $like_or_dislike = 1;
 
+            // pre_var_dump($search_like_bool, null, true);
+
             if (!$search_like_bool) {
 
                 if ($search_like->get_yes_like() === null || $search_like->get_yes_like() == 0 && $search_like->get_no_like() === null || $search_like->get_no_like() == 0) {
@@ -108,7 +107,7 @@ if ($_POST) {
                         $message_model->no_like($id_message, $like_or_dislike);
                     }
                     $id = null;
-                    $user_model->add_bind_user_like($id, $_SERVER['REMOTE_ADDR'], $id_message);
+                    $like_dislike_model->add_bind_user_like($id, $_SERVER['REMOTE_ADDR'], $id_message);
 
                     $new_like = $message_model->get_one_message($id_message);
                     echo json_encode($new_like);
@@ -124,14 +123,14 @@ if ($_POST) {
                 if ($value == 1 && $search_like->get_no_like() == 0 || $search_like->get_no_like() === null) {
 
                     $message_model->cancel_like($id_message, $like_or_dislike);
-                    $id_bind_user_like = $user_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
-                    $user_model->delete_bind_user_like($id_bind_user_like->get_id());
+                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
+                    $like_dislike_model->delete_bind_user_like($id_bind_user_like->get_id());
                 }
                 elseif ($value == -1 && $search_like->get_yes_like() == 0 || $search_like->get_yes_like() === null) {
 
                     $message_model->cancel_no_like($id_message, $like_or_dislike);
-                    $id_bind_user_like = $user_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
-                    $user_model->delete_bind_user_like($id_bind_user_like->get_id());
+                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
+                    $like_dislike_model->delete_bind_user_like($id_bind_user_like->get_id());
                 }
 
                 $new_like = $message_model->get_one_message($id_message);

@@ -1,0 +1,14 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once '../../config/Database.php';
+require_once '../../tools/tools.php';
+require_once '../../Entity/User.php';
+require_once '../../Model/UserModel.php';
+
+
+$user_model = new UserModel();
+$user_model->deconnexion($_SESSION['email']);

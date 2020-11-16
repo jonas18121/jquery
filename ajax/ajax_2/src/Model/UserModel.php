@@ -11,50 +11,76 @@ class UserModel
     }
 
     /**
-     * ajouter le lien entre le user
+     * connexion user via son email
      */
-    public function add_bind_user_like($id, $adresse_ip, $id_message)
+    public function connexion($email, $password, $password_verif)
     {
-        $sql = "INSERT INTO user (id, adresse_ip, id_message) VALUES (?, ?, ?)";
-        $add_user = $this->bdd->prepare($sql);
-        $add_user->bind_param('isi', $id, $adresse_ip, $id_message);
-        $add_user->execute();
+        $user = $this->get_user_for_connexion($email);
+        //pre_var_dump($user, null, true);
+
+        if ($password === $password_verif) 
+        {
+            if(!password_verify($password, $user->get_password())){
+                throw new PDOException('Le mot de passe est incorrect');
+            } 
+            else
+            {
+                session_start();
+                $_SESSION['email']  = $user->get_email();
+                $_SESSION['pseudo'] = $user->get_pseudo();
+        
+                if ($_SESSION['email'] != null) {
+                    header_location('../../index.phtml');
+                }
+            }
+        }
     }
 
     /**
-     * supprimer le lien entre le user et le like du message
+     * selectionner le user pour la function connexion
      */
-    public function delete_bind_user_like($id_like_user)
+    public function get_user_for_connexion($email, $res_id = null, $res_pseudo = null, $res_email = null, $res_password = null)
     {
-        //pre_var_dump($id_like_user, 'L 26, UserModel.php', true);
-        $sql = "DELETE FROM user WHERE id = ? ";
-        $delete_user = $this->bdd->prepare($sql);
-        $delete_user->bind_param('i', $id_like_user);
-        $delete_user->execute();
-
-        //"DELETE FROM user, message WHERE user.id_message = message.id AND user.adresse_ip = ? AND message.id = ? "
-    }
-
-    /**
-     * selectionner le lien entre le user et le like du message
-     */
-    public function get_one_bind_user_like($adresse_ip, $id_message, $res_id = null, $res_adresse_ip = null, $res_id_message = null)
-    {
-        // $sql = "SELECT user.id, user.adresse_ip, user.id_message FROM user WHERE user.id = ?";
-        $sql = 
-            "SELECT user.id, user.adresse_ip, user.id_message 
-            FROM user, message 
-            WHERE user.id_message = message.id AND user.adresse_ip = ? AND message.id = ?" 
-        ;
+        $sql = "SELECT * From user WHERE email= ? ";
         $user = $this->bdd->prepare($sql);
-        $user->bind_param("si", $adresse_ip, $id_message);
+        $user->bind_param('s', $email);
         $user->execute();
-        $user->bind_result($res_id, $res_adresse_ip, $res_id_message);
+        $user->bind_result($res_id, $res_pseudo, $res_email, $res_password);
         $user->fetch();
-        $one_user = User::construct_params($res_id, $res_adresse_ip, $res_id_message);  
+        $one_user = User::construct_params($res_id, $res_pseudo, $res_email, $res_password);  
 
         $user->close();
 
         return $one_user;
+    }
+
+    /**
+     * deconnexion user
+     */
+    public function deconnexion($ession_email)
+    {  
+        unset($ession_email);
+        session_destroy();
+        header_location('connexion_user.phtml');
+    }
+
+    /**
+     * inscription user
+     */
+    public function inscription($pseudo, $email, $password, $id = null)
+    {
+        if (isset($email) && filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
+            
+            $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
+            
+            // pre_var_dump($email, null, true);
+            $sql = "INSERT INTO user (id, pseudo, email, password) VALUES (?, ?, ?, ?)";
+
+            $user = $this->bdd->prepare($sql);
+            $user->bind_param('isss', $id, $pseudo, $email, $passwordHashed);
+            $user->execute();
+
+            header_location('connexion_user.phtml');
+        }
     }
 }

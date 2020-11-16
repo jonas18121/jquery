@@ -134,18 +134,18 @@ class MessageModel
         $res_pseudo = null, 
         $r_yes_like = 0, 
         $r_no_like = 0, 
-        $r_user_id = null, 
-        $r_user_adresse_ip = null, 
-        $r_user_id_message = null
+        $r_bind_user_id = null, 
+        $r_bind_user_adresse_ip = null, 
+        $r_bind_user_id_message = null
     )
     {
         // $sql = "SELECT yes_like, no_like FROM message WHERE adresse_ip = ? AND id= ?";
         //$sql = "SELECT * FROM message WHERE adresse_ip = ? AND id= ?";
-        $sql = "SELECT * FROM message, user WHERE user.adresse_ip = ? AND message.id= ? AND user.id_message = message.id";
+        $sql = "SELECT * FROM message, like_dislike WHERE like_dislike.adresse_ip = ? AND message.id= ? AND like_dislike.id_message = message.id";
         $search = $this->bdd->prepare($sql);
         $search->bind_param('si', $r_adresse_ip, $r_id_message);
         $search->execute();
-        $search->bind_result($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo, $r_yes_like, $r_no_like, $r_user_id, $r_user_adresse_ip, $r_user_id_message);
+        $search->bind_result($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo, $r_yes_like, $r_no_like, $r_bind_user_id, $r_bind_user_adresse_ip, $r_bind_user_id_message);
         $search->fetch();
         $search_like = Message::construct_params($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo, $r_yes_like, $r_no_like);
         
@@ -158,57 +158,6 @@ class MessageModel
         else {
             return [false, $search_like];
         }
-
-        //return $search_like;
-    }
-
-    
-
-
-
-    /**
-     * ajouter le lien entre le user
-     */
-    public function add_bind_user_like($id, $adresse_ip, $id_message)
-    {
-        $sql = "INSERT INTO user (id, adresse_ip, id_message) VALUES (?, ?, ?)";
-        $add_user = $this->bdd->prepare($sql);
-        $add_user->bind_param('isi', $id, $adresse_ip, $id_message);
-        $add_user->execute();
-    }
-
-    /**
-     * supprimer le lien entre le user et le like du message
-     */
-    public function delete_bind_user_like($id_like_user)
-    {
-        $sql = "DELETE FROM user WHERE id = ? ";
-        $delete_user = $this->bdd->prepare($sql);
-        $delete_user->bind_param('i', $id_like_user);
-        $delete_user->execute();
-    }
-
-    /**
-     * selectionner le lien entre le user et le like du message
-     */
-    public function get_one_bind_user_like($adresse_ip, $id_message, $res_id = null, $res_adresse_ip = null, $res_id_message = null)
-    {
-        // $sql = "SELECT user.id, user.adresse_ip, user.id_message FROM user WHERE user.id = ?";
-        $sql = 
-            "SELECT user.id, user.adresse_ip, user.id_message 
-            FROM user, message 
-            WHERE user.id_message = message.id AND user.adresse_ip = ? AND message.id = ?" 
-        ;
-        $message = $this->bdd->prepare($sql);
-        $message->bind_param("i", $adresse_ip, $id_message);
-        $message->execute();
-        $message->bind_result($res_id, $res_adresse_ip, $res_id_message);
-        $message->fetch();
-        $one_message = User::construct_params($res_id, $res_adresse_ip, $res_id_message);  
-
-        $message->close();
-
-        return $one_message;
     }
 }
 

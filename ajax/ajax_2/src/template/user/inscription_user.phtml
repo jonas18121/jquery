@@ -1,0 +1,70 @@
+<?php 
+
+require_once '../../config/Database.php';
+require_once '../../tools/tools.php';
+require_once '../../Entity/User.php';
+require_once '../../Model/UserModel.php';
+
+$user_model = new UserModel();
+
+if(!empty($_POST['pseudo']) && !empty($_POST['password']) && !empty($_POST['email']) && !empty($_POST['password_verif']))
+{
+    $pseudo = strip_tags(trim($_POST['pseudo']));
+    $password = strip_tags(trim($_POST['password']));
+    $email = strip_tags(trim($_POST['email']));
+    $password_verif = strip_tags(trim($_POST['password_verif']));
+
+    if ($password === $password_verif) 
+    {
+        $user_model->inscription($pseudo, $email, $password);
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <a href="../../index.phtml">Retoure à l'accueil</a>
+        <h2>inscription</h2>
+
+        <form action="" method="post">
+            <div>
+                <label for="pseudo">pseudo</label>
+                <div>
+                    <input type="text" name="pseudo" id="pseudo">
+                <div>
+            </div>
+
+            <div>
+                <label for="email">email</label>
+                <div>
+                    <input type="text" name="email" id="email">
+                <div>
+            </div>
+
+            <div>
+                <label for="password">mot de passe</label>
+                <div>
+                    <input type="password" name="password" id="password_inscription">
+                <div>
+            </div>
+
+            <div>
+                <label for="password_verif">comfirme mot de passe</label>
+                <div>
+                    <input type="password" name="password_verif" id="password_verif_inscription">
+                <div>
+            </div>
+
+            <div>
+                <input type="submit" value="Envoyer" id="envoyer">
+            </div>
+        </form>
+    </div>
+</body>
+</html>
