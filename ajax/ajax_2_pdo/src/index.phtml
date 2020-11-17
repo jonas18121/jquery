@@ -1,0 +1,74 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();//demarre
+}
+
+require_once 'config/Database.php';
+require_once 'tools/tools.php';
+require_once 'Model/MessageModel.php';
+require_once 'Entity/Message.php';
+
+$message_model = new MessageModel();
+$messages = $message_model->get_all_message();
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery-3.5.1.min.js" ></script>
+    <script src="js/jquery.validate.min.js" ></script>
+    <script src="js/jquery.js" async></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin" ></script>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/jquery.tinymce.min.js" referrerpolicy="origin" ></script>
+    <script src="js/tiny.js"></script>
+    <!-- <script>alert('ok');</script> -->
+    <title>Document</title>
+</head>
+<body>
+
+    <?php if(is_authenticated_user()) : ?>
+        <a href="template/user/deconnexion_user.phtml"> Déconnexion </a>
+    <?php else : ?>
+        <a href="template/user/connexion_user.phtml"> Connexion </a>
+        <a href="template/user/inscription_user.phtml"> Inscription </a>
+    <?php endif ?>
+
+    <h1>FOAD AJAX</h1>
+
+    <h2>Créer un message</h2>
+
+    <div>
+        <div>
+            <input type="text" placeholder="entrez votre pseudo" id="pseudo">
+        </div>
+        <div>
+            <input type="text" placeholder="entrez un titre" id="title">
+        </div>
+    
+        <textarea name="" id="content" cols="30" rows="10" placeholder="entrez un texte"></textarea>
+
+        <div>
+            <input type="submit" value="envoyer" id="enregistrer_message">
+        </div>
+    </div>
+
+    <div id="affiche_new_message" ></div>
+    <h2>liste de message</h2>
+
+    <?php foreach($messages as $message ) : ?>
+
+        <div>
+            <h3><?= $message->get_title(); ?></h3>
+            <p>publié par <strong><?= $message->get_pseudo() ?></strong> le <?= $message->get_date_at()->format('d/m/Y') ?></p>
+            <a href="template/message/get_one_message.phtml?id_message=<?= $message->get_id() ?>">
+                <p><?= $message->get_content() ?></p>
+            </a> 
+        </div>
+        
+    <?php endforeach ?>
+
+</body>
+</html>
