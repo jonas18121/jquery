@@ -30,10 +30,10 @@ $(function () {
 
             for (let index = 0; index < reponse.length; index++) {
 
-                //console.log(reponse[index]);
+                console.log(reponse[index]);
                 $("#affiche_reponse").append(
                     '<div>'  
-                        + '<p> publier par <strong> ' + reponse[index].pseudo + ' </strong> le ' + reponse[index].date_at.date + '</p>' 
+                        + '<p> publier par <strong> ' + reponse[index].pseudo + ' </strong> le ' + reponse[index].date_at + '</p>' 
                         + '<p>' + reponse[index].content + '</p>'
                     + '</div>'
                 );
@@ -93,47 +93,6 @@ $(function () {
 
     ////////// Compteur Like et no like de message //////////
 
-    $("#like").click(function(){
-
-        $("#affiche_like").empty();
-        
-
-        $.ajax({
-            url: "../../index_ajax.php",
-            data: {
-                id_message_id: $("#id").val(),
-                yes_like: $("#like").val()
-            },
-            method: "post",
-            dataType: "json"
-        })
-        .done(function(reponse){
-
-            $("#affiche_like").append(reponse.yes_like);
-
-        });
-    });
-
-    $("#no_like").click(function(){
-
-        $("#affiche_no_like").empty();
-
-        $.ajax({
-            url: "../../index_ajax.php",
-            data: {
-                id_message_id: $("#id").val(),
-                like_no: $("#no_like").val()
-            },
-            method: "post",
-            dataType: "json"
-        })
-        .done(function(reponse){
-
-            $("#affiche_no_like").append(reponse.no_like);
-        });
-    });
-
-    //////////////////// new correct adri
 
     $('.like_dislike').click(function(){
 

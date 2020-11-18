@@ -1,6 +1,8 @@
 <?php
 
-class UserModel
+require_once 'Model.php';
+
+class UserModel extends Model
 {
     public $bdd;
 
@@ -16,7 +18,6 @@ class UserModel
     public function connexion($email, $password, $password_verif)
     {
         $user = $this->get_user_for_connexion($email);
-        //pre_var_dump($user, null, true);
 
         if ($password === $password_verif) 
         {
@@ -39,17 +40,13 @@ class UserModel
     /**
      * selectionner le user pour la function connexion
      */
-    public function get_user_for_connexion($email, $res_id = null, $res_pseudo = null, $res_email = null, $res_password = null)
+    public function get_user_for_connexion($email)
     {
-        $sql = "SELECT * From user WHERE email= ? ";
+        $sql = "SELECT * From user WHERE email= :email ";
         $user = $this->bdd->prepare($sql);
-        $user->bind_param('s', $email);
-        $user->execute();
-        $user->bind_result($res_id, $res_pseudo, $res_email, $res_password);
-        $user->fetch();
-        $one_user = User::construct_params($res_id, $res_pseudo, $res_email, $res_password);  
-
-        $user->close();
+        $user->setFetchMode(PDO::FETCH_CLASS, User::class);
+        $user->execute([':email' => $email]);
+        $one_user = $user->fetch();
 
         return $one_user;
     }
@@ -73,12 +70,18 @@ class UserModel
             
             $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
             
-            // pre_var_dump($email, null, true);
-            $sql = "INSERT INTO user (id, pseudo, email, password) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO user (id, pseudo, email, password) VALUES (:id, :pseudo, :email, :password)";
 
             $user = $this->bdd->prepare($sql);
-            $user->bind_param('isss', $id, $pseudo, $email, $passwordHashed);
-            $user->execute();
+            $user->setFetchMode(PDO::FETCH_CLASS, User::class);
+            $user->execute(
+                [
+                    ':id'       => $id, 
+                    ':pseudo'   => $pseudo, 
+                    ':email'    => $email, 
+                    ':password' => $passwordHashed
+                ]
+            );
 
             header_location('connexion_user.phtml');
         }

@@ -1,14 +1,9 @@
 <?php
 
-class MessageModel
-{
-    public $bdd;
+require_once 'Model.php';
 
-    public function __construct()
-    {
-        $this->bdd = new Database();
-        $this->bdd = $this->bdd->connect_bdd();
-    }
+class MessageModel extends Model
+{
     
     /**
      * selectionner tous les messages
@@ -82,11 +77,13 @@ class MessageModel
     {
         $sql = "INSERT INTO message (id, title, content, adresse_ip, pseudo) VALUES (:id, :title, :content, :adresse_ip, :pseudo)";
         $add_message = $this->bdd->prepare($sql);
-        $add_message->bindParam(':id', $id, PDO::PARAM_INT);
-        $add_message->bindParam(':title', $title, PDO::PARAM_STR);
-        $add_message->bindParam(':content', $content, PDO::PARAM_STR);
-        $add_message->bindParam(':adresse_ip', $adresse_ip, PDO::PARAM_STR);
-        $add_message->bindParam(':pseudo', $pseudo, PDO::PARAM_STR);
+
+        $add_message->bindParam(':id',          $id,            PDO::PARAM_INT);
+        $add_message->bindParam(':title',       $title,         PDO::PARAM_STR);
+        $add_message->bindParam(':content',     $content,       PDO::PARAM_STR);
+        $add_message->bindParam(':adresse_ip',  $adresse_ip,    PDO::PARAM_STR);
+        $add_message->bindParam(':pseudo',      $pseudo,        PDO::PARAM_STR);
+
         $add_message->execute();
     }
 
@@ -96,15 +93,11 @@ class MessageModel
     public function like($id, $like)
     {
         //$like++;                 yes_like = yes_like + 1
-        //$sql = "UPDATE message SET yes_like = yes_like + {$like} WHERE message.id = :id ";
         $sql = "UPDATE message SET yes_like = yes_like + :yes_like WHERE message.id = :id ";
         $yes_like = $this->bdd->prepare($sql);
-        //$yes_like->bindParam(':id', $id, PDO::PARAM_INT);
-        //$yes_like->bindParam(':yes_like', $like, PDO::PARAM_INT);
-        pre_var_dump('ook L 104 MessageModel',null,true);
         $yes_like->setFetchMode(PDO::FETCH_CLASS, Message::class);
         $yes_like->execute([
-            ':id' => $id,
+            ':id'       => $id,
             ':yes_like' => $like
         ]);
     }
@@ -114,58 +107,59 @@ class MessageModel
      */
     public function cancel_like($id, $like)
     {
-        $sql = "UPDATE message SET yes_like = yes_like - {$like} WHERE message.id = ?";
+        $sql = "UPDATE message SET yes_like = yes_like - :yes_like WHERE message.id = :id ";
         $cancel_like = $this->bdd->prepare($sql);
-        $cancel_like->bind_param('i', $id);
-        $cancel_like->execute();
+        $cancel_like->setFetchMode(PDO::FETCH_CLASS, Message::class);
+        $cancel_like->execute(
+            [
+                ':id'       => $id,
+                ':yes_like' => $like
+            ]
+        );
     }
 
     /**
      * ajouter dislike
      */
-    public function no_like($id, $no_like)
+    public function no_like($id, $like)
     {
-        $sql = "UPDATE message SET no_like = no_like + {$no_like} WHERE message.id = ? ";
-        $yes_like = $this->bdd->prepare($sql);
-        $yes_like->bind_param('i', $id);
-        $yes_like->execute();
+        //$like++;                 yes_like = yes_like + 1
+        $sql = "UPDATE message SET no_like = no_like + :no_like WHERE message.id = :id ";
+        $no_like = $this->bdd->prepare($sql);
+        $no_like->setFetchMode(PDO::FETCH_CLASS, Message::class);
+        $no_like->execute([
+            ':id'       => $id,
+            ':no_like' => $like
+        ]);
     }
 
     /**
      * annuler dislike
      */
-    public function cancel_no_like($id, $no_like)
+    public function cancel_no_like($id, $like)
     {
-        $sql = "UPDATE message SET no_like = no_like - {$no_like} WHERE message.id = ? ";
-        $yes_like = $this->bdd->prepare($sql);
-        $yes_like->bind_param('i', $id);
-        $yes_like->execute();
+        $sql = "UPDATE message SET no_like = no_like - :no_like WHERE message.id = :id ";
+        $cancel_like = $this->bdd->prepare($sql);
+        $cancel_like->setFetchMode(PDO::FETCH_CLASS, Message::class);
+        $cancel_like->execute(
+            [
+                ':id'       => $id,
+                ':no_like' => $like
+            ]
+        );
     }
 
     /**
      * rechercher les likes par rapport à l'adreese ip et à l'idée du message
      */
-    public function search_like(
-        $adresse_ip, 
-        $id_message, 
-        $res_id = null, 
-        $res_title = null, 
-        $res_content = null, 
-        $res_date_at = null, 
-        $res_adresse_ip = null, 
-        $res_pseudo = null, 
-        $r_yes_like = 0, 
-        $r_no_like = 0, 
-        $r_bind_user_id = null, 
-        $r_bind_user_adresse_ip = null, 
-        $r_bind_user_id_message = null
-    )
+    public function search_like($adresse_ip, $id_message)
     {
-        $sql = "SELECT * FROM message, like_dislike WHERE like_dislike.adresse_ip = :adresse_ip AND message.id = :id AND like_dislike.id_message = message.id";
+        $sql = "SELECT * FROM message, like_dislike 
+            WHERE like_dislike.adresse_ip = :adresse_ip AND message.id = :id AND like_dislike.id_message = message.id";
+
         $search = $this->bdd->prepare($sql);
-        //$search->bindParam(':adresse_ip', $adresse_ip, PDO::PARAM_STR);
-        //$search->bindParam(':id_message', $id_message, PDO::PARAM_INT);
         $search->setFetchMode(PDO::FETCH_CLASS, Message::class);
+
         $search->execute(
             [
                 ':adresse_ip' => $adresse_ip,
@@ -173,8 +167,6 @@ class MessageModel
             ]
         );
         $result_search = $search->fetch();
-        //$search_like = Message::construct_params($res_id, $res_title, $res_content, $res_date_at, $res_adresse_ip, $res_pseudo, $r_yes_like, $r_no_like);
-        //pre_var_dump($result_search, 'L 175, messageModel.php',true);
 
         if ($result_search) 
         {
@@ -183,13 +175,6 @@ class MessageModel
         else{
             return [false, $result_search];
         }
-
-        // if ($search_like->get_id() !== null) {
-        //     return [true, $search_like];
-        // }
-        // else {
-        //     return [false, $search_like];
-        // }
     }
 }
 
