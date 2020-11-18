@@ -90,28 +90,26 @@ if ($_POST) {
             $value = intval($_POST['value_like']);
 
             // $_SERVER['REMOTE_ADDR']
-            [$search_like_bool, $search_like] = $message_model->search_like($_SERVER['REMOTE_ADDR'], $id_message);
+            [$search_like_bool, $search_like] = $message_model->search_like('333.33.33.3', $id_message);
             $like_or_dislike = 1;
 
-            // pre_var_dump($search_like_bool, null, true);
-
-            if (!$search_like_bool) {
-
-                if ($search_like->get_yes_like() === null || $search_like->get_yes_like() == 0 && $search_like->get_no_like() === null || $search_like->get_no_like() == 0) {
-
-                    if ($value == 1 ) {
-                        $message_model->like($id_message, $like_or_dislike);
-                    }
-                    elseif ($value == -1 ) {
-
-                        $message_model->no_like($id_message, $like_or_dislike);
-                    }
-                    $id = null;
-                    $like_dislike_model->add_bind_user_like($id, $_SERVER['REMOTE_ADDR'], $id_message);
-
-                    $new_like = $message_model->get_one_message($id_message);
-                    echo json_encode($new_like);
+            
+            if (!$search_like_bool) 
+            {                   
+                if ($value == 1 ) 
+                {
+                    $message_model->like($id_message, $like_or_dislike);
                 }
+                elseif ($value == -1 ) 
+                {
+                    $message_model->no_like($id_message, $like_or_dislike);
+                }
+
+                $id = null;
+                $like_dislike_model->add_bind_user_like($id, '333.33.33.3', $id_message);
+
+                $new_like = $message_model->get_one_message($id_message);
+                echo json_encode($new_like);
             }
             else {
 
@@ -123,13 +121,13 @@ if ($_POST) {
                 if ($value == 1 && $search_like->get_no_like() == 0 || $search_like->get_no_like() === null) {
 
                     $message_model->cancel_like($id_message, $like_or_dislike);
-                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
+                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like('333.33.33.3', $id_message);
                     $like_dislike_model->delete_bind_user_like($id_bind_user_like->get_id());
                 }
                 elseif ($value == -1 && $search_like->get_yes_like() == 0 || $search_like->get_yes_like() === null) {
-
+                    
                     $message_model->cancel_no_like($id_message, $like_or_dislike);
-                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like($_SERVER['REMOTE_ADDR'], $id_message);
+                    $id_bind_user_like = $like_dislike_model->get_one_bind_user_like('333.33.33.3', $id_message);
                     $like_dislike_model->delete_bind_user_like($id_bind_user_like->get_id());
                 }
 

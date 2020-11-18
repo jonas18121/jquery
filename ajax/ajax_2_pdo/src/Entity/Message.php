@@ -17,7 +17,7 @@ class Message extends Text
         $message->id         = $id;
         $message->title      = $title;
         $message->content    = $content;
-        $message->date_at    = new DateTime($date_at);
+        $message->date_at    = $date_at;
         $message->adresse_ip = $adresse_ip;
         $message->pseudo     = $pseudo;
         $message->yes_like   = $yes_like;
