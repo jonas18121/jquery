@@ -1,32 +1,24 @@
 <?php
 
-class ReponseModel
-{
-    public $bdd;
+require_once 'Model.php';
 
-    public function __construct()
-    {
-        $this->bdd = new Database();
-        $this->bdd = $this->bdd->connect_bdd();
-    }
+class ReponseModel extends Model
+{
 
     /**
      * selectionner tous les response d'un message précis
      */
-    public function get_all_reponse($id_message, $r_id = null, $r_pseudo = null, $r_content = null, $r_date_at = null, $r_adresse_ip = null, $r_id_message = null)
+    public function get_all_reponse($id_message)
     {
         $all_reponses = [];
 
-        $sql = "SELECT * FROM reponse WHERE id_message = ?";
+        $sql = "SELECT * FROM reponse WHERE id_message = :id_message";
         $all_reponse = $this->bdd->prepare($sql);
-        $all_reponse->bind_param("i", $id_message);
+        $all_reponse->setFetchMode(PDO::FETCH_CLASS, Reponse::class);
+        $all_reponse->execute([':id_message' => $id_message]);
 
-        $all_reponse->execute();
-        $all_reponse->bind_result($r_id, $r_pseudo, $r_content, $r_date_at, $r_adresse_ip,  $r_id_message);
-        while ($all_reponse->fetch()) {
-            $all_reponses[] = Reponse::construct_params($r_id, $r_pseudo, $r_content, $r_date_at, $r_adresse_ip, $r_id_message);
-        }
-        //pre_var_dump('ligne 29, ReponseModel.php ',$all_reponses, true);
+        $all_reponses = $all_reponse->fetchAll();
+
         return $all_reponses;
     }
 
@@ -35,9 +27,17 @@ class ReponseModel
      */
     public function add_reponse($id, $pseudo, $content, $adresse_ip, $id_message )
     {
-        $sql = "INSERT INTO reponse (id, pseudo, content, adresse_ip, id_message) VALUES (?, ?, ?, ?, ?)";
-        $add_message = $this->bdd->prepare($sql);
-        $add_message->bind_param('isssi', $id, $pseudo, $content, $adresse_ip, $id_message);
-        $add_message->execute();
+        $sql = "INSERT INTO reponse (id, pseudo, content, adresse_ip, id_message) VALUES (:id, :pseudo, :content, :adresse_ip, :id_message)";
+        $add_reponse = $this->bdd->prepare($sql);
+        $add_reponse->setFetchMode(PDO::FETCH_CLASS, Reponse::class);
+        $add_reponse->execute(
+            [
+                ':id'           => $id,
+                ':pseudo'       => $pseudo, 
+                ':content'      => $content, 
+                ':adresse_ip'   => $adresse_ip, 
+                ':id_message'   => $id_message
+            ]
+        );
     }
 }
