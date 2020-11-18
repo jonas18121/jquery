@@ -93,7 +93,7 @@ if ($_POST) {
             [$search_like_bool, $search_like] = $message_model->search_like($_SERVER['REMOTE_ADDR'], $id_message);
             $like_or_dislike = 1;
 
-            // pre_var_dump($search_like_bool, null, true);
+            pre_var_dump('l 96, index_ajax',$search_like, true);
 
             if (!$search_like_bool) {
 
