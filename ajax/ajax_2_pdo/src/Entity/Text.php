@@ -53,7 +53,8 @@ abstract class Text
      */ 
     public function get_date_at()
     {
-        return $this->date_at;
+        return new \DateTime($this->date_at);
+        // return $this->date_at;
     }
 
     /**
