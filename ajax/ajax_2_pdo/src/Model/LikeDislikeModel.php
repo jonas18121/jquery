@@ -1,14 +1,9 @@
 <?php
 
-class LikeDislikeModel
-{
-    public $bdd;
+require_once 'Model.php';
 
-    public function __construct()
-    {
-        $this->bdd = new Database();
-        $this->bdd = $this->bdd->connect_bdd();
-    }
+class LikeDislikeModel extends Model
+{
 
     /**
      * ajouter le lien entre le user et le like du message
